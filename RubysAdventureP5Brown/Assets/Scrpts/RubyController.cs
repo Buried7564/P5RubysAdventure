@@ -10,7 +10,6 @@ public class RubyController: MonoBehaviour
 
     public int maxHealth = 5;
     public float timeInvincible = 2.0f;
-    
     public int health { get { return currentHealth; } }
     int currentHealth;
 
@@ -54,11 +53,13 @@ public class RubyController: MonoBehaviour
 
    public void ChangeHealth(int amount)
     {
-        if (amount > 0)
+        if (amount < 0)
         {
             if (isInvincible)
+            {
                 return;
-
+            }
+            
             isInvincible = true;
             invincibleTimer = timeInvincible;
         }
