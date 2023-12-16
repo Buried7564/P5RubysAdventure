@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using UnityEditor;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ public class EnemyController : MonoBehaviour
     public float speed = 3.0f;
     public bool vertical;
     public float changeTime = 3.0f;
+    bool broken = true;
+    public ParticleSystem smokeEffect;
 
     Rigidbody2D rigidbody2D;
 
@@ -28,6 +31,10 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!broken)
+        {
+            return;
+        }
         timer -= Time.deltaTime;
         if (timer < 0) 
         {
@@ -38,6 +45,10 @@ public class EnemyController : MonoBehaviour
     void FixedUpdate()
     {
         Vector2 position = rigidbody2D.position;
+        if(!broken)
+        {
+            return;
+        }
         if(vertical)
         {
             animator.SetFloat("Move X", 0);
@@ -46,6 +57,8 @@ public class EnemyController : MonoBehaviour
         }
         else
         {
+            animator.SetFloat("Move X", direction);
+            animator.SetFloat("Move Y", 0);
             position.x = position.x + Time.deltaTime * speed * direction;
         }
         rigidbody2D.MovePosition(position);
@@ -57,5 +70,12 @@ public class EnemyController : MonoBehaviour
         {
             player.ChangeHealth(-1);
         }
+    }
+    public void Fix()
+    {
+        broken = false;
+        rigidbody2D.simulated = false;
+        animator.SetTrigger("Fixed");
+        smokeEffect.Stop();
     }
 }
